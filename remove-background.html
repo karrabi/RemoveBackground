@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Removal Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            margin: 20px 0;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .image-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            max-height: 400px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+            color: #666;
+            text-align: center;
+        }
+
+        h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Background Removal Tool</h2>
+        
+        <div class="button-container">
+            <input type="file" id="fileInput" accept="image/*" style="display: none">
+            <button onclick="document.getElementById('fileInput').click()">Select Image</button>
+            <button id="processButton" onclick="processImage()" disabled>Process Image</button>
+        </div>
+
+        <div id="loading" class="loading">
+            Processing image... Please wait...
+        </div>
+
+        <div class="image-container">
+            <div class="image-box">
+                <h3>Original Image</h3>
+                <img id="originalImage" src="/api/placeholder/400/300" alt="Select an image">
+            </div>
+            <div class="image-box">
+                <h3>Processed Image</h3>
+                <img id="processedImage" src="/api/placeholder/400/300" alt="Processed image will appear here">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const processButton = document.getElementById('processButton');
+        const originalImage = document.getElementById('originalImage');
+        const processedImage = document.getElementById('processedImage');
+        const loading = document.getElementById('loading');
+        let selectedFile = null;
+
+        fileInput.addEventListener('change', (e) => {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    originalImage.src = e.target.result;
+                    processButton.disabled = false;
+                };
+                reader.readAsDataURL(selectedFile);
+                processedImage.src = '/api/placeholder/400/300';
+            }
+        });
+
+        async function processImage() {
+            if (!selectedFile) return;
+
+            try {
+                loading.style.display = 'block';
+                processButton.disabled = true;
+
+                const formData = new FormData();
+                formData.append('image', selectedFile);
+
+                const response = await fetch('http://localhost:5000/remove-background', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to process image');
+                }
+
+                const blob = await response.blob();
+                const imageUrl = URL.createObjectURL(blob);
+                processedImage.src = imageUrl;
+            } catch (error) {
+                alert('Error processing image: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+                processButton.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
