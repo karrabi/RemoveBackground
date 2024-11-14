@@ -1,0 +1,10 @@
+Can you help me create a Flask API wrapper for this image processing script? The API should:
+
+1. Accept an image file upload from users via HTTP POST request
+2. Process the image using the code provided below
+3. Return the processed result image to the user
+4. Include proper error handling and CORS support using flask_cors
+
+Here's my existing image processing script:
+
+[Your script here]
