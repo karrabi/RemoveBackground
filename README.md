@@ -28,12 +28,4 @@ pip install -r requirements.txt
 
 wait until all requirements installed
 
-7. Open juyter in your browser
-```bash
-jupyter notebook
-```
-
-8. open project notebook by double clicking on RemoveBG.ipynb
-
-9. Run the cells one by one and watch the result
-
+7. 
