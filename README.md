@@ -28,4 +28,17 @@ pip install -r requirements.txt
 
 wait until all requirements installed
 
-7. 
+7. Run the API
+```bash
+python app.py
+```
+
+Now back-end server is running and waiting for front-end
+
+8. Run front-end
+    - Double-Click on ***remove-background.html*** file and open it in a web browser
+    - Select an Image from your computer with *Select Image* button. The selected image will shows in **Original Image** frame
+    - Click on **Process Image** button and wait for result. it may takes a few seconds based on your system resources.
+    - The processed image will shows on *Processed Image* frame.
+
+
